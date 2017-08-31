@@ -181,9 +181,9 @@ class ProductAttributeValue(models.Model):
         attribute_line_obj = self.env['product.attribute.line']
         product_obj = self.env['product.product']
         result = super(ProductAttributeValue, self).write(vals)
-        if 'attribute_code' in vals:
+        if 'attribute_code' in vals and self.attribute_code!=vals['attribute_code']:
             cond = [('attribute_id', '=', self.attribute_id.id)]
-            attribute_lines = attribute_line_obj.search(cond)
+            attribute_lines = attribute_line_obj.search(cond).filtered(lambda x: self.id in x.value_ids.ids )
             for line in attribute_lines:
                 cond = [('product_tmpl_id', '=', line.product_tmpl_id.id),
                         ('manual_code', '=', False)]
